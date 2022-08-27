@@ -86,7 +86,7 @@ class Running(Training):
 class SportsWalking(Training):
     """Тренировка: спортивная ходьба."""
     c_c_3 = 0.035
-    coeff_calorie_4 = 2
+    c_c_4 = 2
     c_c_5 = 0.029
     MIN = 60
 
@@ -103,8 +103,7 @@ class SportsWalking(Training):
     def get_spent_calories(self) -> float:
         """ Расчет калорий"""
         b = self.get_mean_speed()
-        cal_walk = (self.c_c_3 * self.weight +
-                    (b ** self.coeff_calorie_4 // self.height)
+        cal_walk = (self.c_c_3 * self.weight + (b ** self.c_c_4 // self.height)
                     * self.c_c_5 * self.weight) * self.duration * self.MIN
         return cal_walk
 
