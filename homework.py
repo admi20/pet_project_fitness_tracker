@@ -36,51 +36,49 @@ class Training:
     def get_distance(self) -> float:
         """Получить дистанцию в км."""
         dist = self.action * self.LEN_STEP / self.M_IN_KM
-        # в км
         return dist
 
     def get_mean_speed(self) -> float:
         """Получить среднюю скорость движения."""
         mspeed = self.get_distance() / self.duration
-        # dist or self.distance()???
         return mspeed
 
-    def get_spent_calories(self) -> float:
+    def get_spent_calories(self) -> None:
         """Получить количество затраченных калорий."""
-        pass
+        NotImplementedError
 
     def show_training_info(self) -> InfoMessage:
         """Вернуть информационное сообщение о выполненной тренировке."""
-        return InfoMessage(self.__class__.__name__,
+        self1 = self.__class__.__name__
+        return InfoMessage(self1,
                            self.duration,
                            self.get_distance(),
                            self.get_mean_speed(),
-                           self.get_spent_calories())
+                           self.get_spent_calories()
+                           )
 
 
 class Running(Training):
     """Тренировка: бег."""
 
-    coeff_calorie_1 = 18
-    coeff_calorie_2 = 20
-    min_in_hour = 60
+    coeff_calorie_1: int = 18
+    coeff_calorie_2: int = 20
+    min_in_hour: int = 60
 
     def __init__(self,
                  action: int,
                  duration: float,
-                 weight: float):
-
-        # get_spent_calories()) методы не наследуются
+                 weight: float) -> None:
 
         super().__init__(action, duration, weight)
 
     def get_spent_calories(self) -> float:
         """ Расчет калорий"""
-        cal_Run = ((self.coeff_calorie_1 * self.get_mean_speed()
+        cal_run = ((self.coeff_calorie_1 * self.get_mean_speed()
                    - self.coeff_calorie_2)
                    * self.weight / self.M_IN_KM * self.duration
                    * self.min_in_hour)
-        return cal_Run
+        return cal_run
 
 
 class SportsWalking(Training):
@@ -88,23 +86,21 @@ class SportsWalking(Training):
     c_c_3 = 0.035
     c_c_4 = 2
     c_c_5 = 0.029
-    MIN = 60
+    in_h = 60
 
     def __init__(self,
                  action: int,
                  duration: float,
                  weight: float,
-                 height: float):
-        # get_distance,get_mean_speed,show_training_info,get_spent_calories):
+                 height: float) -> None:
         self.height = height
         super().__init__(action, duration, weight)
-        # ,get_distance(),get_mean_speed(),show_training_info())
 
     def get_spent_calories(self) -> float:
         """ Расчет калорий"""
         b = self.get_mean_speed()
         cal_walk = (self.c_c_3 * self.weight + (b ** self.c_c_4 // self.height)
-                    * self.c_c_5 * self.weight) * self.duration * self.MIN
+                    * self.c_c_5 * self.weight) * self.duration * self.in_h
         return cal_walk
 
 
@@ -123,9 +119,7 @@ class Swimming(Training):
                  count_pool: int):
         self.length_pool = length_pool
         self.count_pool = count_pool
-    # get_distance(),get_mean_speed(),show_training_info(),get_spent_calories()):
         super().__init__(action, duration, weight)
-    # get_distance(),get_mean_speed(),show_training_info())
 
     def get_mean_speed(self) -> float:
         a = self.length_pool
@@ -147,11 +141,20 @@ def read_package(workout_type: str, data: list) -> Training:
     training_type = {
         'SWM': Swimming,
         'RUN': Running,
-        'WLK': SportsWalking
+        'WLK': SportsWalking,
     }
-    training_class = training_type[workout_type]
-    training_obj = training_class(*data)
-    return training_obj
+    for key in training_type:
+        try:
+            if key == workout_type:
+                training_class = training_type[workout_type]
+                training_obj = training_class(*data)
+                return training_obj
+        except TypeError:
+            print("Неизвестный тип тренировки")
+    # try:
+# if workout_type == str(training_type.keys()):
+# # except training_type.DoesNotExist:
+# print("Неизвестный тип тренировки")
 
 
 def main(training: Training) -> None:
