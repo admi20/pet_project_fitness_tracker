@@ -22,8 +22,8 @@ class InfoMessage:
 class Training:
     """Базовый класс тренировки."""
 
-    LEN_STEP = 0.65
-    M_IN_KM = 1000
+    LEN_STEP: float = 0.65
+    M_IN_KM:int = 1000
 
     def __init__(self,
                  action: int,
@@ -45,16 +45,16 @@ class Training:
 
     def get_spent_calories(self) -> None:
         """Получить количество затраченных калорий."""
-        NotImplementedError
+        raise NotImplementedError("get_spent_calories не написан")
 
     def show_training_info(self) -> InfoMessage:
         """Вернуть информационное сообщение о выполненной тренировке."""
-        self1 = self.__class__.__name__
-        return InfoMessage(self1,
+        type(self).notation = self.__class__.__name__
+        return InfoMessage(type(self).notation,
                            self.duration,
                            self.get_distance(),
                            self.get_mean_speed(),
-                           self.get_spent_calories()
+                           self.get_spent_calories(),
                            )
 
 
@@ -143,18 +143,13 @@ def read_package(workout_type: str, data: list) -> Training:
         'RUN': Running,
         'WLK': SportsWalking,
     }
-    for key in training_type:
-        try:
-            if key == workout_type:
-                training_class = training_type[workout_type]
-                training_obj = training_class(*data)
-                return training_obj
-        except TypeError:
-            print("Неизвестный тип тренировки")
-    # try:
-# if workout_type == str(training_type.keys()):
-# # except training_type.DoesNotExist:
-# print("Неизвестный тип тренировки")
+    try:
+        workout_type in training_type
+        training_class = training_type[workout_type]
+        training_obj = training_class(*data)
+        return training_obj
+    except TypeError:
+        print("Неизвестный тип тренировки")
 
 
 def main(training: Training) -> None:
