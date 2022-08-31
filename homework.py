@@ -47,10 +47,13 @@ class Training:
         """Получить количество затраченных калорий."""
         raise NotImplementedError("get_spent_calories не написан")
 
+    def training_type(self) -> str:
+        """Вернуть тип тренировки"""
+        return self.__class__.__name__
+
     def show_training_info(self) -> InfoMessage:
         """Вернуть информационное сообщение о выполненной тренировке."""
-        type(self).notation = self.__class__.__name__
-        return InfoMessage(type(self).notation,
+        return InfoMessage(self.training_type(),
                            self.duration,
                            self.get_distance(),
                            self.get_mean_speed(),
